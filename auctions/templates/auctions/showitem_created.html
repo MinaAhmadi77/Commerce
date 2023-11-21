@@ -1,0 +1,135 @@
+{% extends "auctions/layout.html" %}
+{% block style%}
+<!-- <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+</style> -->
+{% endblock %}
+{% block body %}
+<div style="display:flex; flex-direction:column;align-items: center;justify-content: center; border:1px solid black ;width: 90%;background-color: white;padding-top: 50px;padding-bottom: 50px ;">
+    <div style="display: flex; flex-direction:row;width:70% ; ">
+        <div>
+            <h2>Listing:{{item.title}}</h1>
+            <img style="width: 500px ;padding-right:20px ;"src="{{item.imgurl}}" alt="">
+            <h1>Aditional information :</h1>
+            <hr>
+            <h6>Who Created: {{item.user}}</h3>
+            <h6>Category: {{item.category}}</h3>
+            <h6>startPrice: $ {{item.starting_bid}}</h3>
+            <h6>Description: {{item.discription}}</h3>
+        </div>
+        <div>
+                {%if closeflag%}
+                {%if maxuser.id == user.id %}
+                <h5>this listing is disabled and the winner is:</h5>
+                <h5>There was no bid, so we don't have a winner! </h5>
+                <h5></h5>
+                {%else%}
+                <h5>this listing is disabled and the winner is:</h5>
+                <h5>Username: {{maxuser}}</h5>
+                <h5> bid: ${{maxbid}}</h5>
+                {%endif%}
+                {%else%}
+        
+                <form action="{%url 'close' id %}" method="post">
+                    {% csrf_token %}
+                    <h2>close listing:</h2>
+                    {%if maxuser.id == user.id %}
+                    <h5>there is no bids yet</h5>
+                    {%else%}
+                    <h5>Max Bid: ${{maxbid}}</h5>
+                    <h5>Usename: {{maxuser}}</h5>
+                    {%endif%}
+                    <input type="submit" style="background-color:red; color:white;width:150px;height: 50px ;font-size: large;font-weight: bold;" value="close listing">
+                </form>  
+                {%endif%}
+                {% if bidflag%}
+                <form action="{%url 'removewatch' id %}" method="post">
+                    {% csrf_token %}
+                    <hr>
+                    <input type="submit" style="width:300px ;height:50px ;font-size: 20px; color:rgb(255, 33, 33);"value="remove from watchlist">
+                </form>  
+                {% else %}
+        
+                <form action="{%url 'addwatch' id %}" method="post">
+                    {% csrf_token %}
+                    <hr>
+                    <input type="submit" style="width:300px ;height:50px ;font-size: 20px; color:rgb(255, 122, 33);" value="add to watchlist">
+                </form>
+                {% endif %}
+                
+        </div>
+        <div style="padding-right:50px ;padding-left:50px ;display: flex;flex-direction: column;">
+            <h2>Bids list:</h2>
+            <hr>
+            <h6> Username___bid</h6>
+                <div style="overflow-x: scroll;overflow-y: scroll;height: 500px; width: 300px;">
+                    {%for bid in bidslist%}
+                    <div style=" display: flex;flex-direction: row;" >
+                    <h5>{{bid.user}} </h5>
+                    ____  
+                    <h5>${{bid.bid}}</h5>
+                    
+                    </div>
+                    {%empty%}
+                    <h4 style="color:red ;">No bids</h4>
+                    
+                    
+                    {%endfor%}
+                
+                </div>
+            
+
+
+        </div>
+    </div>
+    {% if user.is_authenticated %}
+    
+
+    <div style="display:flex ; flex-direction:column; padding-top: 20px;">
+        <div>
+            <form action="{%url 'addcomment' id %}" onsubmit="return validateForm()" method="post" required>
+                {% csrf_token %}
+                <h2>ADD YOUR COMMENT :</h2>
+                <textarea name="comment" id="" cols="100" rows="5"></textarea>
+                <br>
+    
+                <input type="submit" value="add comment">
+            </form>
+        </div>
+        <div style="padding-left:20px ;">
+            <br>
+            <h1>Comment list:</h1>
+            <hr>
+            <table style="width:45%">
+                <tr>
+                    <th>Username</th>
+                    <th>comment</th> 
+                </tr>
+            </table>
+            <br>
+            {%for comment in comments%}
+                <div style="display:flex ; flex-direction:row;">
+                    <div  style="color:rgb(220, 61, 159) ;">{{comment.user.username}} </div>
+                    <div style="padding-left:220px ;flex-wrap: wrap;  width: 1000px;word-wrap: break-word; " >{{comment.text}}</div>
+                </div>
+                <hr>
+
+                
+            
+            <!-- <h3>{{comment.user.username}}             {{comment.text}}</h3> -->
+            {%empty%}
+            <h4>There is not comment yet</h4>
+            {%endfor%}
+           
+        </div>
+    </div>
+    {% else %}
+    Please login to comment
+    {% endif %}
+</div>
+
+
+{% endblock %}

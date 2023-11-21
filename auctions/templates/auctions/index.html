@@ -1,0 +1,97 @@
+{% extends "auctions/layout.html" %}
+{% block style %}
+<style>
+     .list{
+     
+        display: flex;
+        padding-left: 50px;
+         
+        padding-top: 20px;
+        flex-direction: column;
+         
+      } 
+
+     .item{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        border:1px solid black ;
+        border-radius: 20px;
+        margin-right: 20px;
+        margin-bottom: 20px;
+        color: black;
+        width:700px ;
+  
+     }
+     .clos{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        border:3px solid rgb(231, 7, 7) ;
+        border-radius: 20px;
+        margin-right: 20px;
+        margin-bottom: 20px;
+        color: black;
+        width:700px ;
+        
+  
+
+     }
+     img{
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+     }
+
+</style>
+
+{% endblock %}
+{% block body %}
+<div class="list">
+    {% for list in listings %}
+        {%if list.close == True %}
+        <button class="clos">
+            
+     
+     
+            <a  href="{% url 'showitem' list.id %}" style="color:black ; text-decoration: none;">
+                <img src="{{list.imgurl}}" height="150px">
+                <h3 style="font-weight:bold ;">{{list.title}}</h4>
+                <h5>{{list.discription}}</h5>
+                <h6> price : ${{list.maxbid}}</h6>
+                <h6 style="color: red;">closed by {{list.user.username}}</h6>
+                
+            </a>
+   
+           
+
+           
+        </button>       
+        {%else%}
+        <button class="item">
+            
+     
+     
+            <a  href="{% url 'showitem' list.id %}" style="color:black ; text-decoration: none;">
+                <img src="{{list.imgurl}}" height="150px">
+                <h3 style="font-weight:bold ;">{{list.title}}</h4>
+                <h5>{{list.discription}}</h5>
+                <h6> price : ${{list.maxbid}}</h6>
+                <h6 style="color: grey;"> Created  {{list.time}}</h6>
+                
+            </a>
+   
+           
+
+           
+        </button>
+        {%endif%}
+    {% empty %}
+    <h1 style="color:rgb(127, 56, 145) ;">Watchlist is empty</h1>
+
+    {% endfor %}
+</div>
+
+
+{% endblock %}
